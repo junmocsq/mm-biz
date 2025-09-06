@@ -7,6 +7,9 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/junmo/mm-biz/models/goods"
+	"github.com/junmo/mm-biz/models/other"
+	"github.com/junmo/mm-biz/models/trade"
+	"github.com/junmo/mm-biz/models/user"
 )
 
 func main() {
@@ -15,7 +18,30 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	db.Migrator().DropTable(&goods.Goods{}, &goods.Category{}, &goods.Brand{}, &goods.Company{})
-	db.AutoMigrate(&goods.Goods{}, &goods.Category{}, &goods.Brand{}, &goods.Company{})
+	goodsModels := []interface{}{
+		&goods.Brand{}, &goods.Category{}, &goods.Company{}, &goods.Goods{},
+		&goods.Sale{}, &goods.Stock{}, &goods.Unit{},
+	}
+	db.Migrator().DropTable(goodsModels...)
+	db.AutoMigrate(goodsModels...)
 
+	otherModels := []interface{}{
+		&other.Branch{}, &other.HeadQuarters{},
+	}
+	db.Migrator().DropTable(otherModels...)
+	db.AutoMigrate(otherModels...)
+
+	tradeModels := []interface{}{
+		&trade.Retail{}, &trade.RetailGoods{},
+		&trade.Wholesale{}, &trade.WholesaleGoods{},
+	}
+	db.Migrator().DropTable(tradeModels...)
+	db.AutoMigrate(tradeModels...)
+
+	userModels := []interface{}{
+		&user.User{}, &user.Wholesaler{},
+	}
+	db.Migrator().DropTable(userModels...)
+	db.AutoMigrate(userModels...)
+	log.Println("Migration completed")
 }
